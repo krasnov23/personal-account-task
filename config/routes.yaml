@@ -1,3 +1,7 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+services:
+    path: /
+    controller: App\Controller\PersonalAccountController::myServices
+
+transactions:
+    path: /transactions
+    controller: App\Controller\PersonalAccountController::myTransactions

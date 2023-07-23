@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section id="title-block">
+        <div class="block-description text-lg-center text-md-center text-sm-center mx-auto">
+            <h1>Мои Транзакции</h1>
+        </div>
+        <div class="mb-2">
+            <ul class="nav nav-pills nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link text-bg-light" href="{{ path('services') }}">Мои Подписки и Баланс</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active text-bg-dark " aria-current="page" href="#">Мои Транзакции</a>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <section id="main-block">
+        {{ include('personal-account/_balance.html.twig') }}
+        <div class="block-description another-blocks-description container-fluid">
+            <div>
+                <h3 class="text-center">История Транзакций</h3>
+            </div>
+            <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="col-lg-4 col-md-4 col-sm-4">Название услуги</th>
+                        <th scope="col" class="col-lg-8 col-md-8 col-sm-8">Количество списанных или пополненных денежных средств</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td scope="row">Пользование Лифтом</td>
+                        <td>3</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-dark" type="button">Имитировать Расчетный День</button>
+                    <button class="btn btn-outline-dark" type="button">Пополнить Баланс</button>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
