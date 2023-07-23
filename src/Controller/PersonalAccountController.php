@@ -9,16 +9,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class PersonalAccountController extends AbstractController
 {
 
-    #[Route('/', name: 'app_my_services')]
+    #[Route('/')]
     public function myServices(): Response
     {
-        return $this->render('personal-account/my-services.html.twig');
+        return $this->render('personal-account/my-services.html.twig',[
+            
+        ]);
     }
 
-    #[Route('/transactions', name: 'app_my_transactions')]
+    #[Route('/transactions')]
     public function myTransactions(): Response
     {
-        return $this->render('personal-account/my-transactions.html.twig');
+        return $this->render('personal-account/my-transactions.html.twig',[
+
+        ]);
     }
 
 
