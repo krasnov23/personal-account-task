@@ -21,6 +21,37 @@ class ServiceInfoRepository extends ServiceEntityRepository
         parent::__construct($registry, ServiceInfo::class);
     }
 
+    public function save(ServiceInfo $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(ServiceInfo $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function findServiceByNameAndPriceNotNull(string $name): ServiceInfo
+    {
+        return $this->_em->createQuery('SELECT s FROM App\Entity\ServiceInfo s WHERE s.name = :name AND s.amount IS NULL')
+            ->setParameter('name',$name)->getSingleResult();
+    }
+
+    public function findServicesNamesByUser(int $id): array
+    {
+        return $this->_em->createQuery('SELECT s FROM App\Entity\ServiceInfo s WHERE :useraccountId MEMBER OF s.userAccounts')
+            ->setParameter('useraccountId',$id)->getResult();
+    }
+
+
 //    /**
 //     * @return ServiceInfo[] Returns an array of ServiceInfo objects
 //     */

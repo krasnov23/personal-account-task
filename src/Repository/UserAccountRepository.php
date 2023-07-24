@@ -21,6 +21,26 @@ class UserAccountRepository extends ServiceEntityRepository
         parent::__construct($registry, UserAccount::class);
     }
 
+    public function save(UserAccount $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(UserAccount $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+
+
 //    /**
 //     * @return UserAccount[] Returns an array of UserAccount objects
 //     */

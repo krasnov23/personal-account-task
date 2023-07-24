@@ -1,9 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% for label, messages in app.flashes(['success', 'warning']) %}
+        {% for message in messages %}
+            <div class="flash-{{ label }} alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <section id="title-block">
         <div class="block-description text-lg-center text-md-center text-sm-center mx-auto">
-            <h1>Мои подписки и баланс</h1>
+            <h1>Здравствуйте {{ user.name }}</h1>
         </div>
         <div class="mb-2">
             <ul class="nav nav-pills nav-justified">
@@ -17,7 +24,7 @@
         </div>
     </section>
     <section id="main-block">
-        {{ include('personal-account/_balance.html.twig') }}
+        {{ include('personal-account/_balance.html.twig', {balance: user.balance}) }}
         <div class="block-description another-blocks-description container-fluid">
             <div class="row">
                 <div class="col-lg-6 col-md-6">
@@ -27,6 +34,7 @@
                     <button class="btn btn-outline-dark add-service" type="button">Добавить услугу</button>
                 </div>
             </div>
+
         </div>
         <div class="block-description another-blocks-description container-fluid">
             <table class="table">
