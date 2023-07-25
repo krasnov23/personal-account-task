@@ -1,9 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     <section id="title-block">
         <div class="block-description text-lg-center text-md-center text-sm-center mx-auto">
-            <h1>Мои Транзакции</h1>
+            <h1>Здравствуйте {{ user.name }}</h1>
         </div>
         <div class="mb-2">
             <ul class="nav nav-pills nav-justified">
@@ -23,23 +28,32 @@
                 <h3 class="text-center">История Транзакций</h3>
             </div>
             <div>
+                {% if user.userTransactions|length > 0 %}
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col" class="col-lg-4 col-md-4 col-sm-4">Название услуги</th>
-                        <th scope="col" class="col-lg-8 col-md-8 col-sm-8">Количество списанных или пополненных денежных средств</th>
-                    </tr>
+                        <th scope="col" class="col-lg-3 col-md-3 col-sm-3">Название услуги</th>
+                        <th scope="col" class="col-lg-3 col-md-3 col-sm-3">Дата списания </th>
+                        <th scope="col" class="col-lg-3 col-md-3 col-sm-3">Количество списанных средств</th>
+                        <th scope="col" class="col-lg-2 col-md-2 col-sm-2">Остаток после </th>
                     </thead>
                     <tbody>
+                    {% for transaction in user.userTransactions %}
                     <tr>
-                        <td scope="row">Пользование Лифтом</td>
-                        <td>3</td>
+                        <td scope="row">{{ transaction.servicename }}</td>
+                        <td>{{ transaction.date|date("m/d/y") }}</td>
+                        <td>{{ transaction.totalprice }}</td>
+                        <td>{{ transaction.accountbalance }}</td>
                     </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                    <p class="text-center">У вас пока нет добавленных транзакций</p>
+                {% endif %}
                 <div class="d-grid gap-2">
-                    <button class="btn btn-outline-dark" type="button">Имитировать Расчетный День</button>
-                    <button class="btn btn-outline-dark" type="button">Пополнить Баланс</button>
+                    <a href="{{ path('settlementday') }}" class="btn btn-outline-dark">Имитировать Расчетный День</a>
+                    <button class="btn btn-outline-dark add-form-to-add-money" type="button">Пополнить Баланс</button>
                 </div>
             </div>
         </div>

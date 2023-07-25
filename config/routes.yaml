@@ -5,3 +5,11 @@ services:
 transactions:
     path: /transactions
     controller: App\Controller\PersonalAccountController::myTransactions
+
+deleteservice:
+    path: /deleteservice/{id}
+    controller: App\Controller\PersonalAccountController::deleteService
+
+settlementday:
+    path: /settlement-day
+    controller: App\Controller\PersonalAccountController::settlementDay

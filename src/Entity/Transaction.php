@@ -35,12 +35,12 @@ class Transaction
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getServiceName(): ?string
     {
         return $this->serviceName;
     }
 
-    public function setName(string $name): static
+    public function setServiceName(string $name): static
     {
         $this->serviceName = $name;
 
