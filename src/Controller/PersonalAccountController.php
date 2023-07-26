@@ -36,14 +36,21 @@ class PersonalAccountController extends AbstractController
                                   Request $request, UserAccountService $userAccountService): Response
     {
         $currentUser = $userAccountRepository->find(1);
+        $transactions = $currentUser->getUserTransactions();
 
         if ($request->getMethod() === 'POST')
         {
-            $userAccountService->addMoneyToUserBalance($request,$currentUser);
+            if(count($request->request->all()) === 3)
+            {
+                $transactions = $userAccountService->sortTransactionsByDateOrName($request,$currentUser->getId());
+            }else{
+                $userAccountService->addMoneyToUserBalance($request,$currentUser);
+            }
         }
 
         return $this->render('personal-account/my-transactions.html.twig',[
-            'user' => $currentUser
+            'user' => $currentUser,
+            'transactions' => $transactions
         ]);
     }
 

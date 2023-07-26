@@ -39,6 +39,33 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
+    public function sortTransactions(int $id,string $startDate = null,string $endDate = null,string $serviceName = null)
+    {
+        $query = $this->createQueryBuilder('t')
+            ->where('t.userAccount = :id')
+            ->setParameter('id',$id);
+
+        if ($startDate)
+        {
+            $query->andWhere('t.date >= :startDate')
+                ->setParameter('startDate',$startDate);
+        }
+
+        if ($endDate)
+        {
+            $query->andWhere('t.date <= :endDate')
+                ->setParameter('endDate',$endDate);
+        }
+
+        if ($serviceName)
+        {
+            $query->andWhere('t.serviceName = :name')
+                ->setParameter('name',$serviceName);
+        }
+
+        return $query->orderBy('t.date','DESC')->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Transaction[] Returns an array of Transaction objects
 //     */
@@ -63,4 +90,58 @@ class TransactionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /*public function findTransactionsWithStartDate(int $userAccountId, $date): array
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :useraccountId MEMBER OF t.userAccount
+            AND t.date > :date')
+                ->setParameter('date',$date)
+                ->setParameter('userAccountId',$userAccountId)
+                ->getResult();
+        }
+
+        public function findTransactionsWithEndDate($date,int $userAccountId): array
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :useraccountId MEMBER OF t.userAccount
+            AND t.date < :date')
+                ->setParameter('date',$date)
+                ->setParameter('userAccountId',$userAccountId)
+                ->getResult();
+        }
+
+        public function findTransactionWithName(string $name): array
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :userAccountId MEMBER OF t.userAccount
+            AND t.serviceName = :name')->setParameter('name',$name)->getResult();
+        }
+
+        public function findTransactionsWithStartAndEndDate(int $id,$startDate,$endDate): array
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :userAccountId MEMBER OF t.userAccount AND
+            t.date BETWEEN :startDate AND :endDate')
+                ->setParameter('userAccountId',$id)
+                ->setParameter('startDate',$startDate)
+                ->setParameter('endDate',$endDate)
+                ->getResult();
+        }
+
+        public function findTransactionWithStartDateAndName(int $id,$startDate, string $name): array
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :userAccountId MEMBER OF t.userAccount AND
+            t.date > :startDate AND t.serviceName = :name')
+                ->setParameter('userAccountId',$id)
+                ->setParameter('startDate',$startDate)
+                ->setParameter('name',$name)
+                ->getResult();
+        }
+
+        public function findTransactionWithEndDateAndName(int $id,$date, string $name)
+        {
+            return $this->_em->createQuery('SELECT t FROM App\Entity\Transaction t WHERE :userAccountId MEMBER OF t.userAccount AND
+            t.date < :date AND t.serviceName = :name')
+                ->setParameter('userAccountId',$id)
+                ->setParameter('startDate',$date)
+                ->setParameter('name',$name)
+                ->getResult();
+        }*/
 }

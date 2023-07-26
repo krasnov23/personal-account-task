@@ -6,6 +6,7 @@ use App\Entity\ServiceInfo;
 use App\Entity\Transaction;
 use App\Entity\UserAccount;
 use App\Repository\ServiceInfoRepository;
+use App\Repository\TransactionRepository;
 use App\Repository\UserAccountRepository;
 use DateTime;
 use DateTimeImmutable;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class UserAccountService
 {
     public function __construct(private UserAccountRepository $userAccountRepository,
+                                private TransactionRepository $transactionRepository,
                                 private ServiceInfoRepository $serviceInfoRepository,
                                 private RequestStack $requestStack,
                                 private RouterInterface $router,
@@ -130,6 +132,42 @@ class UserAccountService
         $this->userAccountRepository->save($currentUser,true);
         $this->requestStack->getSession()->getFlashBag()->add('success','Баланс успешно пополнен');
         new RedirectResponse($this->router->generate('transactions'),302);
+    }
+
+    public function sortTransactionsByDateOrName(Request $request,int $userId)
+    {
+        $allData = $request->request->all();
+        $transactionByQuery = null;
+
+        if ($allData['begin'] and $allData['finish'] and $allData['service-name'])
+        {
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,$allData['begin'],
+                $allData['finish'],$allData['service-name']);
+        }elseif ($allData['begin'] and $allData['finish']){
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,$allData['begin'],
+            $allData['finish']);
+        }elseif ($allData['begin'] and $allData['service-name']){
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,$allData['begin'],
+            null,$allData['service-name']);
+        }elseif ($allData['finish'] and $allData['service-name']){
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,null,
+            $allData['finish'],$allData['service-name']);
+        }elseif ($allData['begin'])
+        {
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,$allData['begin']);
+        }elseif ($allData['finish'])
+        {
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,null,
+            $allData['finish']);
+        }elseif ($allData['service-name'])
+        {
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId,null,
+                null,$allData['service-name']);
+        }else{
+            $transactionByQuery = $this->transactionRepository->sortTransactions($userId);
+        }
+
+        return $transactionByQuery;
     }
 
     public function immitateSettlementDay(): RedirectResponse

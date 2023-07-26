@@ -32,8 +32,25 @@
             <div>
                 <h3 class="text-center">История Транзакций</h3>
             </div>
+            <div class="text-center">
+                <form method="post">
+                    <label for="start-calendar" class="form-label mt-2">От какого числа:</label>
+                    <input type="date" name="begin" placeholder="dd-mm-yyyy" id="start-calendar" value="" min="1997-01-01" max="2030-12-31">
+                    <label for="end-calendar" class="form-label mt-2">До какого числа :</label>
+                    <input id="end-calendar" type="date" name="finish" placeholder="dd-mm-yyyy" value="" min="1997-01-01" max="2030-12-31">
+                    <br>
+                    <label for="category-name" class="form-label mt-2">Название категории :</label>
+                    <select class="form-select mb-3 mt-2" aria-label="Default select example" name="service-name">
+                        <option selected></option>
+                        <option value="вывоз мусора">вывоз мусора</option>
+                        <option value="электричество">электричество</option>
+                        <option value="лифт">лифт</option>
+                    </select>
+                    <button class="btn btn-outline-dark w-50 mt-3 mb-3" type="submit">Сортировать</button>
+                </form>
+            </div>
             <div>
-                {% if user.userTransactions|length > 0 %}
+                {% if transactions|length > 0 %}
                 <table class="table">
                     <thead>
                     <tr>
@@ -43,7 +60,7 @@
                         <th scope="col" class="col-lg-2 col-md-2 col-sm-2">Остаток после </th>
                     </thead>
                     <tbody>
-                    {% for transaction in user.userTransactions %}
+                    {% for transaction in transactions %}
                     <tr>
                         <td scope="row">{{ transaction.servicename }}</td>
                         <td>{{ transaction.date|date("m/d/y") }}</td>
