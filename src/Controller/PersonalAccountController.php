@@ -13,19 +13,18 @@ class PersonalAccountController extends AbstractController
 {
 
     public function __construct(private UserAccountRepository $userAccountRepository,
-                                private Request $request,
                                 private UserAccountService $userAccountService )
     {
     }
 
     #[Route('/')]
-    public function myServices(): Response
+    public function myServices(Request $request): Response
     {
         $currentUser = $this->userAccountRepository->find(1);
 
-        if ($this->request->getMethod() === 'POST')
+        if ($request->getMethod() === 'POST')
         {
-            $this->userAccountService->addAndShowUserServices($this->request,$currentUser);
+            $this->userAccountService->addAndShowUserServices($request,$currentUser);
         }
 
         return $this->render('personal-account/my-services.html.twig',[
@@ -35,18 +34,18 @@ class PersonalAccountController extends AbstractController
     }
 
     #[Route('/transactions')]
-    public function myTransactions(): Response
+    public function myTransactions(Request $request): Response
     {
         $currentUser = $this->userAccountRepository->find(1);
         $transactions = $currentUser->getUserTransactions();
 
-        if ($this->request->getMethod() === 'POST')
+        if ($request->getMethod() === 'POST')
         {
-            if(count($this->request->request->all()) === 3)
+            if(count($request->request->all()) === 3)
             {
-                $transactions = $this->userAccountService->sortTransactionsByDateOrName($this->request,$currentUser->getId());
+                $transactions = $this->userAccountService->sortTransactionsByDateOrName($request,$currentUser->getId());
             }else{
-                $this->userAccountService->addMoneyToUserBalance($this->request,$currentUser);
+                $this->userAccountService->addMoneyToUserBalance($request,$currentUser);
             }
         }
 
