@@ -195,9 +195,18 @@ class UserAccountService
             return new RedirectResponse($this->router->generate('transactions'),302);
         }
 
+        foreach ($userServices as $service)
+        {
+            $transaction = new Transaction();
+            $transaction->setServiceName($service->getName());
+            $transaction->setDate(new DateTimeImmutable());
+            $transaction->setTotalPrice($service->getAmount() * $service->getPrice() / $dayInMonth * $diff);
+            $transaction->setAccountBalance($currentUser->getBalance() - ($service->getAmount() * $service->getPrice() / $dayInMonth * $diff));
+            $currentUser->addUserTransaction($transaction);
+            $currentUser->setBalance($currentUser->getBalance() - ($service->getAmount() * $service->getPrice() / $dayInMonth * $diff));
+            $this->userAccountRepository->save($currentUser,true);
+        }
 
-        $currentUser->setBalance($currentUser->getBalance() - $totalPayment);
-        $this->userAccountRepository->save($currentUser,true);
         $this->requestStack->getSession()->getFlashBag()->add('success','деньги за все услуги успешно списаны');
         return new RedirectResponse($this->router->generate('transactions'),302);
     }
