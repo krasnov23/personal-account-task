@@ -31,6 +31,8 @@ class UserAccountService
      */
     public function addAndShowUserServices(Request $request, UserAccount $userAccount): void
     {
+        $userId = $userAccount->getId();
+
         // Получили имя сервиса
         $serviceName = $request->request->all()['service-name'];
 
@@ -53,7 +55,7 @@ class UserAccountService
             new RedirectResponse($this->router->generate('services'), 302);
         } else {
             // Ищем все сервисы которые есть у нашего пользователя
-            $servicesOfUser = $this->serviceInfoRepository->findServicesNamesByUser($userAccount->getId());
+            $servicesOfUser = $this->serviceInfoRepository->findServicesNamesByUser($userId);
 
             // Переменная в которую попадает значение в случае если имя сервиса уже есть у пользователя
             $checkSameNames = null;
@@ -85,7 +87,7 @@ class UserAccountService
                     $userAccount->addUserService($serviceOfUserById);
 
                     // Обновляем пользователя
-                    $this->userAccountRepository->save($userAccount, true);
+                    //$this->userAccountRepository->save($userAccount, true);
 
                     // Если данного сервиса еще не было в сущности User, то создаем
                 } else {
@@ -238,6 +240,6 @@ class UserAccountService
 
         $userAccount->addUserService($newServiceInfo);
 
-        $this->userAccountRepository->save($userAccount, true);
+        //$this->userAccountRepository->save($userAccount, true);
     }
 }

@@ -27,7 +27,6 @@ class PersonalAccountController extends AbstractController
 
         return $this->render('personal-account/my-services.html.twig', [
             'user' => $currentUser,
-            'services' => $currentUser->getUserServices(),
         ]);
     }
 
