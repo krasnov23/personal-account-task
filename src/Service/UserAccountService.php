@@ -86,9 +86,6 @@ class UserAccountService
                     // Задаем нашему пользователю обновленный сервис
                     $userAccount->addUserService($serviceOfUserById);
 
-                    // Обновляем пользователя
-                    //$this->userAccountRepository->save($userAccount, true);
-
                     // Если данного сервиса еще не было в сущности User, то создаем
                 } else {
                     $this->makeNewUserService($priceOfSelectedService, $amountOfService, $serviceName,
@@ -240,6 +237,5 @@ class UserAccountService
 
         $userAccount->addUserService($newServiceInfo);
 
-        //$this->userAccountRepository->save($userAccount, true);
     }
 }
