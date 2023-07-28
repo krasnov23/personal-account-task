@@ -14,8 +14,8 @@ class AddUserServiceFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('amount',NumberType::class,['label'=>'Количество',
-                'attr' => ['min' => '1','step' => '1']]);
+            ->add('amount', NumberType::class, ['label' => 'Количество',
+                'attr' => ['min' => '1', 'step' => '1']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

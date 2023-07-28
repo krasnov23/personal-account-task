@@ -39,57 +39,54 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
-    public function sortTransactions(int $id,string $startDate = null,string $endDate = null,string $serviceName = null)
+    public function sortTransactions(int $id, string $startDate = null, string $endDate = null, string $serviceName = null)
     {
         $query = $this->createQueryBuilder('t')
             ->where('t.userAccount = :id')
-            ->setParameter('id',$id);
+            ->setParameter('id', $id);
 
-        if ($startDate)
-        {
+        if ($startDate) {
             $query->andWhere('t.date >= :startDate')
-                ->setParameter('startDate',$startDate);
+                ->setParameter('startDate', $startDate);
         }
 
-        if ($endDate)
-        {
+        if ($endDate) {
             $query->andWhere('t.date <= :endDate')
-                ->setParameter('endDate',$endDate);
+                ->setParameter('endDate', $endDate);
         }
 
-        if ($serviceName)
-        {
+        if ($serviceName) {
             $query->andWhere('t.serviceName = :name')
-                ->setParameter('name',$serviceName);
+                ->setParameter('name', $serviceName);
         }
 
-        return $query->orderBy('t.date','DESC')->getQuery()->getResult();
+        return $query->orderBy('t.date', 'DESC')->getQuery()->getResult();
     }
 
-//    /**
-//     * @return Transaction[] Returns an array of Transaction objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Transaction[] Returns an array of Transaction objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('t')
+    //            ->andWhere('t.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('t.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Transaction
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Transaction
+    //    {
+    //        return $this->createQueryBuilder('t')
+    //            ->andWhere('t.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 
     /*public function findTransactionsWithStartDate(int $userAccountId, $date): array
         {

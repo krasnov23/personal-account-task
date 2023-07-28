@@ -21,10 +21,10 @@ class UserAccount
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'userAccount', targetEntity: Transaction::class, cascade: ['persist','remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'userAccount', targetEntity: Transaction::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $userTransactions;
 
-    #[ORM\ManyToMany(targetEntity: ServiceInfo::class, inversedBy: 'userAccounts',cascade: ['persist','remove'])]
+    #[ORM\ManyToMany(targetEntity: ServiceInfo::class, inversedBy: 'userAccounts', cascade: ['persist', 'remove'])]
     private Collection $userServices;
 
     public function __construct()
