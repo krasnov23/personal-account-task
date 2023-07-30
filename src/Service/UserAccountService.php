@@ -125,31 +125,8 @@ class UserAccountService
     public function sortTransactionsByDateOrName(Request $request, int $userId)
     {
         $allData = $request->request->all();
-        $transactionByQuery = null;
-
-        if ($allData['begin'] and $allData['finish'] and $allData['service-name']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin'],
-                $allData['finish'], $allData['service-name']);
-        } elseif ($allData['begin'] and $allData['finish']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin'],
-                $allData['finish']);
-        } elseif ($allData['begin'] and $allData['service-name']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin'],
-                null, $allData['service-name']);
-        } elseif ($allData['finish'] and $allData['service-name']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, null,
-                $allData['finish'], $allData['service-name']);
-        } elseif ($allData['begin']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin']);
-        } elseif ($allData['finish']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, null,
-                $allData['finish']);
-        } elseif ($allData['service-name']) {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId, null,
-                null, $allData['service-name']);
-        } else {
-            $transactionByQuery = $this->transactionRepository->sortTransactions($userId);
-        }
+        $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin'],
+            $allData['finish'], $allData['service-name']);
 
         return $transactionByQuery;
     }
