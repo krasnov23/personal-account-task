@@ -29,10 +29,11 @@ class UserAccountService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function addAndShowUserServices(Request $request, UserAccount $userAccount): void
+    public function addAndShowUserServices(Request $request): void
     {
-        $userId = $userAccount->getId();
-        $userBalance = $userAccount->getBalance();
+        $userWithServices = $this->userAccountRepository->findAllUserServices(1);
+
+        $userBalance = $userWithServices->getBalance();
 
         // Получили имя сервиса
         $serviceName = $request->request->all()['service-name'];
@@ -56,7 +57,7 @@ class UserAccountService
             new RedirectResponse($this->router->generate('services'), 302);
         } else {
             // Ищем все сервисы которые есть у нашего пользователя
-            $servicesOfUser = $this->serviceInfoRepository->findServicesNamesByUser($userId);
+            $servicesOfUser = $userWithServices->getUserServices();
 
             // Переменная в которую попадает значение в случае если имя сервиса уже есть у пользователя
             $checkSameNames = null;
@@ -82,20 +83,20 @@ class UserAccountService
                     $serviceOfUserById->setAmount($newAmountOfService);
 
                     // Задаем новый баланс с вычетом
-                    $userAccount->setBalance($userBalance - $totalCoast);
+                    $userWithServices->setBalance($userBalance - $totalCoast);
 
                     // Задаем нашему пользователю обновленный сервис
-                    $userAccount->addUserService($serviceOfUserById);
+                    $userWithServices->addUserService($serviceOfUserById);
 
                     // Если данного сервиса еще не было в сущности User, то создаем
                 } else {
                     $this->makeNewUserService($priceOfSelectedService, $amountOfService, $serviceName,
-                        $totalCoast, $userAccount);
+                        $totalCoast, $userWithServices);
                 }
                 // Если список пуст, то добавляем новый сервис
             } else {
                 $this->makeNewUserService($priceOfSelectedService, $amountOfService, $serviceName,
-                    $totalCoast, $userAccount);
+                    $totalCoast, $userWithServices);
             }
 
             // $this->addFlash('success','Cервис успешно добавлен');
@@ -108,9 +109,9 @@ class UserAccountService
         $transaction->setServiceName($serviceName);
         $transaction->setDate(new \DateTimeImmutable());
         $transaction->setTotalPrice($totalCoast);
-        $transaction->setAccountBalance($userAccount->getBalance());
-        $userAccount->addUserTransaction($transaction);
-        $this->userAccountRepository->save($userAccount, true);
+        $transaction->setAccountBalance($userWithServices->getBalance());
+        $userWithServices->addUserTransaction($transaction);
+        $this->userAccountRepository->save($userWithServices, true);
     }
 
     public function addMoneyToUserBalance(Request $request, UserAccount $currentUser): void
