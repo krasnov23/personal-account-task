@@ -19,14 +19,13 @@ class PersonalAccountController extends AbstractController
     #[Route('/')]
     public function myServices(Request $request): Response
     {
-        $currentUser = $this->userAccountRepository->find(1);
 
         if ('POST' === $request->getMethod()) {
-            $this->userAccountService->addAndShowUserServices($request, $currentUser);
+            $this->userAccountService->addAndShowUserServices($request, $this->userAccountRepository->find(1));
         }
 
         return $this->render('personal-account/my-services.html.twig', [
-            'user' => $currentUser,
+            'user' => $this->userAccountRepository->findAllUserServices(1),
         ]);
     }
 

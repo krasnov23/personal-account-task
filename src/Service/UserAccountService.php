@@ -32,6 +32,7 @@ class UserAccountService
     public function addAndShowUserServices(Request $request, UserAccount $userAccount): void
     {
         $userId = $userAccount->getId();
+        $userBalance = $userAccount->getBalance();
 
         // Получили имя сервиса
         $serviceName = $request->request->all()['service-name'];
@@ -48,7 +49,7 @@ class UserAccountService
         $totalCoast = ceil($amountOfService * $priceOfSelectedService / $compareTime[0] * $compareTime[1]);
 
         // Проверка что больше итоговая сумма или баланс пользователя
-        if ($userAccount->getBalance() < $totalCoast) {
+        if ($userBalance < $totalCoast) {
             // $this->addFlash('warning','Ваш баланс меньше чем нужная сумма');
             $this->requestStack->getSession()->getFlashBag()->add('warning', 'Ваш баланс меньше чем нужная сумма');
             // $this->redirectToRoute('services');
@@ -81,7 +82,7 @@ class UserAccountService
                     $serviceOfUserById->setAmount($newAmountOfService);
 
                     // Задаем новый баланс с вычетом
-                    $userAccount->setBalance($userAccount->getBalance() - $totalCoast);
+                    $userAccount->setBalance($userBalance - $totalCoast);
 
                     // Задаем нашему пользователю обновленный сервис
                     $userAccount->addUserService($serviceOfUserById);

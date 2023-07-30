@@ -39,6 +39,17 @@ class UserAccountRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllUserServices(int $id): UserAccount
+    {
+        return $this->createQueryBuilder('u')
+            ->addSelect('s')
+            ->leftJoin('u.userServices','s')
+            ->where('u.id = :id')
+            ->setParameter('id',$id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     //    /**
     //     * @return UserAccount[] Returns an array of UserAccount objects
     //     */
