@@ -29,10 +29,8 @@ class UserAccountService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function addAndShowUserServices(Request $request): array
+    public function addAndShowUserServices(Request $request,UserAccount $userWithServices): array
     {
-        $userWithServices = $this->userAccountRepository->findAllUserServices(1);
-
         $userBalance = $userWithServices->getBalance();
 
         // Получили имя сервиса
