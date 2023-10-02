@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PersonalAccountController extends AbstractController
 {
     public function __construct(private UserAccountRepository $userAccountRepository,
-        private UserAccountService $userAccountService)
+                                private UserAccountService $userAccountService)
     {
     }
 
@@ -21,7 +21,9 @@ class PersonalAccountController extends AbstractController
     {
 
         if ('POST' === $request->getMethod()) {
-            $this->userAccountService->addAndShowUserServices($request, $this->userAccountRepository->find(1));
+            $addService = $this->userAccountService->addAndShowUserServices($request);
+            $this->addFlash($addService[0],$addService[1]);
+            $this->redirectToRoute($addService[2]);
         }
 
         return $this->render('personal-account/my-services.html.twig', [
@@ -29,15 +31,18 @@ class PersonalAccountController extends AbstractController
         ]);
     }
 
+
     #[Route('/transactions')]
     public function myTransactions(Request $request): Response
     {
-        $currentUser = $this->userAccountRepository->find(1);
-        $transactions = $currentUser->getUserTransactions();
+        $currentUser = $this->userAccountRepository->findUserTransactions(1);
 
         if ('POST' === $request->getMethod()) {
             if (3 === count($request->request->all())) {
-                $transactions = $this->userAccountService->sortTransactionsByDateOrName($request, $currentUser->getId());
+                return $this->render('personal-account/my-transactions.html.twig', [
+                    'user' => $currentUser,
+                    'transactions' => $this->userAccountService->sortTransactionsByDateOrName($request,$currentUser->getId())
+                ]);
             } else {
                 $this->userAccountService->addMoneyToUserBalance($request, $currentUser);
             }
@@ -45,7 +50,7 @@ class PersonalAccountController extends AbstractController
 
         return $this->render('personal-account/my-transactions.html.twig', [
             'user' => $currentUser,
-            'transactions' => $transactions,
+            'transactions' => $currentUser->getUserTransactions(),
         ]);
     }
 

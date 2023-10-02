@@ -1,17 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for message in app.flashes('warning') %}
-        <div class="alert alert-danger" role="alert">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-
     <section id="title-block">
         <div class="block-description text-lg-center text-md-center text-sm-center mx-auto">
             <h1>Здравствуйте {{ user.name }}</h1>

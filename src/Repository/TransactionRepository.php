@@ -42,7 +42,9 @@ class TransactionRepository extends ServiceEntityRepository
     public function sortTransactions(int $id, string $startDate = null, string $endDate = null, string $serviceName = null)
     {
         $query = $this->createQueryBuilder('t')
-            ->where('t.userAccount = :id')
+            ->addSelect('u')
+            ->leftJoin("t.userAccount",'u')
+            ->where('u.id = :id')
             ->setParameter('id', $id);
 
         if ($startDate) {

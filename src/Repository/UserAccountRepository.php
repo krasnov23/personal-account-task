@@ -47,8 +47,41 @@ class UserAccountRepository extends ServiceEntityRepository
             ->where('u.id = :id')
             ->setParameter('id',$id)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
+
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findUserTransactions(int $id, ?string $startDate = null, ?string $endDate = null, ?string $serviceName = null): ?UserAccount
+    {
+        $query = $this->createQueryBuilder('u')
+            ->addSelect('t')
+            ->leftJoin('u.userTransactions','t')
+            ->where('u.id = :id')
+            ->setParameter('id',$id)
+        ;
+
+        if ($startDate)
+        {
+            $query->andWhere('t.date >= :startDate')
+                ->setParameter('startDate', $startDate);
+        }
+
+        if ($endDate) {
+            $query->andWhere('t.date <= :endDate')
+                ->setParameter('endDate', $endDate);
+        }
+
+        if ($serviceName) {
+            $query->andWhere('t.serviceName = :name')
+                ->setParameter('name', $serviceName);
+        }
+
+        return $query->orderBy('t.date', 'DESC')->getQuery()->getOneOrNullResult();
+
+    }
+
 
 
 

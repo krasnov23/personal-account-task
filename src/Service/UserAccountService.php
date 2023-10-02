@@ -29,7 +29,7 @@ class UserAccountService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function addAndShowUserServices(Request $request): void
+    public function addAndShowUserServices(Request $request): array
     {
         $userWithServices = $this->userAccountRepository->findAllUserServices(1);
 
@@ -52,9 +52,8 @@ class UserAccountService
         // Проверка что больше итоговая сумма или баланс пользователя
         if ($userBalance < $totalCoast) {
             // $this->addFlash('warning','Ваш баланс меньше чем нужная сумма');
-            $this->requestStack->getSession()->getFlashBag()->add('warning', 'Ваш баланс меньше чем нужная сумма');
             // $this->redirectToRoute('services');
-            new RedirectResponse($this->router->generate('services'), 302);
+            return ['warning','Ваш баланс меньше чем нужная сумма','services'];
         } else {
             // Ищем все сервисы которые есть у нашего пользователя
             $servicesOfUser = $userWithServices->getUserServices();
@@ -99,22 +98,22 @@ class UserAccountService
                     $totalCoast, $userWithServices);
             }
 
+            $transaction = new Transaction();
+            $transaction->setServiceName($serviceName);
+            $transaction->setDate(new \DateTimeImmutable());
+            $transaction->setTotalPrice($totalCoast);
+            $transaction->setAccountBalance($userWithServices->getBalance());
+            $userWithServices->addUserTransaction($transaction);
+            $this->userAccountRepository->save($userWithServices, true);
+
             // $this->addFlash('success','Cервис успешно добавлен');
-            $this->requestStack->getSession()->getFlashBag()->add('success', 'Сервис успешно добавлен');
+            return ['success','Cервис успешно добавлен','services'];
             // $this->redirectToRoute('services');
-            new RedirectResponse($this->router->generate('services'), 302);
         }
 
-        $transaction = new Transaction();
-        $transaction->setServiceName($serviceName);
-        $transaction->setDate(new \DateTimeImmutable());
-        $transaction->setTotalPrice($totalCoast);
-        $transaction->setAccountBalance($userWithServices->getBalance());
-        $userWithServices->addUserTransaction($transaction);
-        $this->userAccountRepository->save($userWithServices, true);
     }
 
-    public function addMoneyToUserBalance(Request $request, UserAccount $currentUser): void
+    public function addMoneyToUserBalance(?Request $request, UserAccount $currentUser): void
     {
         $newBalance = $currentUser->getBalance() + $request->request->all()['amount-to-add'];
         $currentUser->setBalance($newBalance);
@@ -123,13 +122,15 @@ class UserAccountService
         new RedirectResponse($this->router->generate('transactions'), 302);
     }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function sortTransactionsByDateOrName(Request $request, int $userId)
     {
         $allData = $request->request->all();
-        $transactionByQuery = $this->transactionRepository->sortTransactions($userId, $allData['begin'],
+        return $this->transactionRepository->sortTransactions($userId, $allData['begin'],
             $allData['finish'], $allData['service-name']);
 
-        return $transactionByQuery;
     }
 
     public function immitateSettlementDay(): RedirectResponse
